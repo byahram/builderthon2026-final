@@ -78,6 +78,7 @@ router.post('/talk', async (req, res) => {
     ${ragContext ? `\nUse this context to guide the roadmap:\n\n${ragContext}\n\n` : ''}
 
 CRITICAL: Respond with ONLY the following JSON structure. No markdown.
+CRITICAL: All textual content (titles, messages) MUST be in KOREAN (한국어).
 
 {
   "roadmap": [
@@ -107,7 +108,8 @@ Constraints:
 - Goal: ${goal}
 - Start date: ${startDate}
 
-Remember: Output ONLY valid JSON, no other text.`;
+Remember: Output ONLY valid JSON, no other text.
+Remember: Write EVERYTHING in KOREAN.`;
 
     // Call Claude API with Fallback
     let roadmapData;
