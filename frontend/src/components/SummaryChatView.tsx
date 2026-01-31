@@ -66,7 +66,7 @@ export const SummaryChatView: React.FC<SummaryChatViewProps> = ({ userData, setU
     setMessages([...messages, newUserMsg, newAiMsg]);
     setUserData({ ...userData, goal: goalInput });
     setGoalInput(''); // Clear input
-    onGenerate();
+    // onGenerate() removed to prevent race condition. useEffect in App.tsx will trigger it.
   };
 
   const SummaryItem = ({ label, value, emoji, icon: Icon }: any) => (

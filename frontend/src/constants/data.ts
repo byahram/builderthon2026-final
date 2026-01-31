@@ -14,9 +14,9 @@ export const categories = [
 ];
 
 export const experienceLevels = [
-  { id: 'beginner', label: '입문', desc: '처음 시작해요', emoji: '🐣' },
+  { id: 'novice', label: '입문', desc: '처음 시작해요', emoji: '🐣' },
   { id: 'intermediate', label: '중급', desc: '경험이 있어요', emoji: '🦅' },
-  { id: 'advanced', label: '고급', desc: '더 잘하고 싶어요', emoji: '🚀' },
+  { id: 'expert', label: '고급', desc: '더 잘하고 싶어요', emoji: '🚀' },
 ];
 
 export const motivations = [
@@ -45,7 +45,7 @@ export const personas = [
     sampleText: '정신 차리세요! 오늘 할 일을 내일로 미루면, 성공도 내일로 미뤄집니다!'
   },
   { 
-    id: 'healing', 
+    id: 'gentle', 
     name: '감성 멘토', 
     desc: '따뜻한 위로와 격려', 
     quote: '"오늘도 수고했어요. 천천히 가도 괜찮아요."',
@@ -55,7 +55,7 @@ export const personas = [
     sampleText: '오늘 하루도 정말 고생 많았어요. 당신의 속도대로 천천히, 하지만 꾸준히 나아가면 돼요.'
   },
   { 
-    id: 'analyst', 
+    id: 'expert', 
     name: 'AI 분석가', 
     desc: '냉철한 데이터 기반 코칭', 
     quote: '"현재 달성률 40%. 효율적인 전략이 필요합니다."',
