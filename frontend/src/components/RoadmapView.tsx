@@ -10,6 +10,7 @@ interface RoadmapViewProps {
   completedDays: number[];
   streak: number;
   showDifficultyAdjustment: boolean;
+  isLoading?: boolean;
 }
 
 export const RoadmapView: React.FC<RoadmapViewProps> = ({ 
@@ -19,8 +20,51 @@ export const RoadmapView: React.FC<RoadmapViewProps> = ({
   currentDay, 
   completedDays, 
   streak,
-  showDifficultyAdjustment
+  showDifficultyAdjustment,
+  isLoading = false
 }) => {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-linear-to-br from-slate-900 to-purple-900 text-white p-6">
+        {/* Loading Skeleton */}
+        <div className="max-w-2xl mx-auto space-y-8 animate-pulse">
+            {/* Header Skeleton */}
+            <div className="space-y-4">
+                <div className="h-8 bg-white/10 rounded-lg w-3/4"></div>
+                <div className="h-4 bg-white/10 rounded-lg w-1/4"></div>
+            </div>
+
+            {/* Progress Bar Skeleton */}
+            <div className="h-3 bg-white/10 rounded-full w-full"></div>
+
+            {/* Main Card Skeleton */}
+            <div className="bg-white/5 rounded-3xl p-8 border border-white/5 space-y-6">
+                <div className="flex gap-4">
+                    <div className="w-12 h-12 bg-white/10 rounded-full shrink-0"></div>
+                    <div className="flex-1 space-y-3">
+                        <div className="h-4 bg-white/10 rounded w-20"></div>
+                        <div className="h-8 bg-white/10 rounded w-full"></div>
+                        <div className="h-4 bg-white/10 rounded w-5/6"></div>
+                    </div>
+                </div>
+                <div className="h-14 bg-white/10 rounded-2xl w-full"></div>
+            </div>
+
+            {/* List Skeleton */}
+            <div className="space-y-3">
+                {[1,2,3].map(i => (
+                    <div key={i} className="h-16 bg-white/5 rounded-2xl border border-white/5"></div>
+                ))}
+            </div>
+            
+            <div className="text-center text-purple-300 mt-8 animate-bounce">
+                AI가 맞춤형 로드맵을 설계중입니다... 🚀
+            </div>
+        </div>
+      </div>
+    );
+  }
+
   const todayMission = roadmap[currentDay - 1];
   const progress = (completedDays.length / roadmap.length) * 100;
   
