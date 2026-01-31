@@ -29,7 +29,7 @@ export const RoadmapPreview: React.FC<RoadmapPreviewProps> = ({ setStep, userDat
     <div className="min-h-screen bg-linear-to-br from-slate-900 to-purple-900 text-white p-6">
       <div className="max-w-2xl mx-auto">
         <button 
-          onClick={() => setStep('duration')}
+          onClick={() => setStep('persona')}
           className="mb-8 flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
           <ChevronLeft className="w-5 h-5" />
           뒤로
@@ -110,7 +110,7 @@ export const RoadmapPreview: React.FC<RoadmapPreviewProps> = ({ setStep, userDat
                 <div 
                   key={mission.day}
                   className="flex items-center gap-3 p-2 hover:bg-white/5 rounded-lg transition-colors">
-                  <div className={`w-8 h-8 rounded-full bg-linear-to-br ${gradient} flex items-center justify-center shrink-0`}>
+                  <div className={`w-14 h-14 rounded-2xl bg-linear-to-br ${gradient} flex items-center justify-center shrink-0 shadow-lg`}>
                     <span className="text-xs font-bold">{mission.day}</span>
                   </div>
                   <span className="text-sm">{mission.title}</span>
@@ -121,10 +121,10 @@ export const RoadmapPreview: React.FC<RoadmapPreviewProps> = ({ setStep, userDat
         </div>
         
         <button 
-          onClick={() => setStep('roadmap')}
-          className="w-full py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-102 active:scale-98">
-          시작하기! 🚀
-        </button>
+            onClick={() => setStep('roadmap')}
+            className="w-full py-4 bg-linear-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-102 active:scale-98 animate-pulse">
+            이 로드맵으로 시작하기
+          </button>
       </div>
     </div>
   );

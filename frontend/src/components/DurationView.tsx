@@ -59,9 +59,9 @@ export const DurationView: React.FC<DurationViewProps> = ({ setStep, userData, s
         </div>
         
         <button 
-          onClick={() => setStep('roadmap-preview')}
+          onClick={() => setStep('persona')}
           className="w-full py-4 bg-linear-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-102 active:scale-98">
-          로드맵 미리보기
+          다음
         </button>
       </div>
     </div>

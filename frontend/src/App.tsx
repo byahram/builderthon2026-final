@@ -7,6 +7,7 @@ import { GoalView } from './components/GoalView';
 import { ExperienceView } from './components/ExperienceView';
 import { MotivationView } from './components/MotivationView';
 import { DurationView } from './components/DurationView';
+import { PersonaView } from './components/PersonaView';
 import { RoadmapPreview } from './components/RoadmapPreview';
 import { RoadmapView } from './components/RoadmapView';
 import { UploadView } from './components/UploadView';
@@ -20,7 +21,8 @@ export default function App() {
     goal: '',
     experience: '',
     motivation: '',
-    duration: 14,
+    duration: 0,
+    persona: '',
     startDate: new Date().toISOString().split('T')[0]
   });
   const [roadmap, setRoadmap] = useState<Mission[]>([]);
@@ -48,56 +50,83 @@ export default function App() {
     }
   }, []);
 
+  const handleStepChange = (newStep: string) => {
+    setStep(newStep);
+  };
+
   const generateRoadmap = () => {
     const missions = [];
     const { category, experience, duration } = userData;
     
     // Base missions defined in logic, could be moved to separate file but kept here for now as it contains logic
     const baseMissions: Record<string, string[]> = {
-      writing: [
-        '주제 브레인스토밍 (5가지 아이디어)',
-        '아웃라인 작성',
-        '도입부 초안 (300자)',
-        '중간부 작성 (500자)',
-        '결말 구성',
-        '전체 초고 완성',
-        '1차 퇴고',
-        '2차 다듬기',
-        '최종 완성본'
+      dev: [
+        '기획 및 요구사항 분석',
+        '기술 스택 선정',
+        '프로젝트 초기 세팅',
+        'DB 설계 및 API 명세',
+        '핵심 기능 구현 1',
+        '핵심 기능 구현 2',
+        'UI/UX 디자인 적용',
+        '버그 수정 및 테스트',
+        '배포 및 회고'
       ],
-      art: [
-        '레퍼런스 수집 (10장)',
-        '러프 스케치 3종',
-        '최종 스케치 선택',
-        '밑그림 작업',
-        '기본 채색',
-        '디테일 추가',
-        '배경 작업',
+      design: [
+        '레퍼런스 수집 및 무드보드',
+        '아이디어 스케치',
+        '컬러 팔레트 & 폰트 선정',
+        '주요 요소 시안 작업',
+        '디테일 작업 1',
+        '디테일 작업 2',
+        '목업 적용 및 피드백',
         '최종 보정',
-        '작품 완성'
+        '포트폴리오 업로드'
+      ],
+      writing: [
+        '주제 선정 및 자료 조사',
+        '목차 및 개요 작성',
+        '서론(도입부) 집필',
+        '본론 주요 내용 작성 1',
+        '본론 주요 내용 작성 2',
+        '결론(마무리) 집필',
+        '전체 초고 검토',
+        '문장 다듬기 및 퇴고',
+        '최종 발행'
       ],
       video: [
-        '콘셉트 & 스토리보드',
-        '장소 섭외 & 소품 준비',
-        'A-Roll 촬영',
-        'B-Roll 촬영',
-        '러프 편집',
-        '자막 & 효과',
-        '음악 & 사운드',
-        '컬러 그레이딩',
-        '최종 익스포트'
+        '기획 및 대본 작성',
+        '촬영 장소/소품 준비',
+        '메인 컷 촬영',
+        '인서트 컷 촬영',
+        '컷 편집 (가편집)',
+        '자막 및 효과 삽입',
+        '배경음악 및 사운드 조절',
+        '색보정 및 썸네일 제작',
+        '최종 렌더링 및 업로드'
       ],
-      planning: [
-        '문제 정의 & 목표 설정',
-        '시장 조사',
-        '타겟 분석',
-        '솔루션 아이디어 5가지',
-        '실행 계획 수립',
-        '예산 & 리소스',
-        '위험 요소 분석',
-        '최종 제안서 작성',
-        '프레젠테이션 준비'
+      business: [
+        '아이템 정의 및 시장 조사',
+        '타겟 고객 페르소나 설정',
+        '경쟁사 분석',
+        '차별화 포인트 도출',
+        'MVP(최소기능제품) 기획',
+        '마케팅 채널 확보',
+        '초기 상세페이지 기획',
+        '가설 검증 및 피드백',
+        '사업계획서 초안 완성'
+      ],
+      lifestyle: [
+        '현재 상태 분석 및 목표 설정',
+        '식단/루틴 계획 세우기',
+        '필요한 도구/환경 세팅',
+        '실천 1일차 & 인증',
+        '실천 2~3일차 & 기록',
+        '중간 점검 및 피드백',
+        '강도 높이기',
+        '눈바디/성과 측정',
+        '지속 가능한 루틴 확립'
       ]
+
     };
 
     let missionList = baseMissions[category] || baseMissions.writing;
@@ -222,7 +251,7 @@ export default function App() {
     if (choice === 'new') {
       // 새 프로젝트 시작
       setStep('welcome');
-      setUserData({category: '', goal: '', experience: '', motivation: '', duration: 14, startDate: new Date().toISOString().split('T')[0]});
+      setUserData({category: '', goal: '', experience: '', motivation: '', duration: 0, persona: '', startDate: new Date().toISOString().split('T')[0]});
       setCompletedDays([]);
       setStreak(0);
       setCurrentDay(1);
@@ -241,7 +270,22 @@ export default function App() {
       {step === 'goal' && <GoalView setStep={setStep} userData={userData} setUserData={setUserData} />}
       {step === 'experience' && <ExperienceView setStep={setStep} userData={userData} setUserData={setUserData} />}
       {step === 'motivation' && <MotivationView setStep={setStep} userData={userData} setUserData={setUserData} />}
-      {step === 'duration' && <DurationView setStep={setStep} userData={userData} setUserData={setUserData} />}
+      {step === 'duration' && (
+        <DurationView 
+          setStep={handleStepChange} 
+          userData={userData} 
+          setUserData={setUserData} 
+        />
+      )}
+      
+      {step === 'persona' && (
+        <PersonaView 
+          setStep={handleStepChange} 
+          userData={userData} 
+          setUserData={setUserData} 
+        />
+      )}
+
       {step === 'roadmap-preview' && <RoadmapPreview setStep={setStep} userData={userData} roadmap={roadmap} />}
       {step === 'roadmap' && (
         <RoadmapView 

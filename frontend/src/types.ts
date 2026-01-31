@@ -13,6 +13,7 @@ export interface UserData {
   experience: string;
   motivation: string;
   duration: number;
+  persona: string;
   startDate: string;
 }
 
