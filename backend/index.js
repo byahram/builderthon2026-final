@@ -6,7 +6,16 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
+const cors = require('cors');
+
 // Middleware
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.options('*', cors());
+
 app.use(express.json());
 
 // History directory
