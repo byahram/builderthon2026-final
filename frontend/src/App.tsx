@@ -172,14 +172,6 @@ const App: React.FC = () => {
              completedDays={completedDays}
              streak={streak}
              showDifficultyAdjustment={showDifficultyAdjustment}
-           <RoadmapView 
-             setStep={setStep} 
-             userData={userData} 
-             roadmap={roadmap} 
-             currentDay={currentDay}
-             completedDays={completedDays}
-             streak={streak}
-             showDifficultyAdjustment={showDifficultyAdjustment}
              isLoading={isLoading} // Pass loading state
            />
            /* Preview removed
