@@ -21,10 +21,12 @@ app.use(express.json());
 // Import routes
 const chatRoutes = require('./routes/chat');
 const talkRoutes = require('./routes/talk');
+const ragRoutes = require('./routes/rag');
 
 // Mount routes
 app.use('/api', chatRoutes);
 app.use('/api', talkRoutes);
+app.use('/api/rag', ragRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

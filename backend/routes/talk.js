@@ -26,33 +26,78 @@ router.post('/talk', async (req, res) => {
       });
     }
 
-    // Build the prompt for Claude to generate roadmap
-    const systemMessage = `You are an expert learning roadmap generator. Your task is to create a beginner-to-intermediate friendly daily roadmap based on the user's input.
+    // --- RAG: RETRIEVAL START (No-DB Version) ---
+    let ragContext = "";
+    let ragComparison = null; 
 
-CRITICAL: You MUST respond with ONLY valid JSON. No markdown, no explanations, no text outside the JSON object.
+    try {
+      const { rerankDocuments } = require('../services/nvidia');
+      const { getKnowledgeBaseChunks } = require('../services/local_rag');
+      
+      const ragQuery = `${category} related to ${goal} for ${experience} level`;
+      
+      // 1. Load All Chunks
+      const allDocuments = getKnowledgeBaseChunks();
+      
+      if (allDocuments.length > 0) {
+        // 2. NVIDIA Rerank Directly
+        const rerankedIndices = await rerankDocuments(ragQuery, allDocuments);
+        
+        // 3. Take Top 3 (Selected)
+        const topDocs = rerankedIndices.slice(0, 3).map(item => ({
+            score: item.logit,
+            title: allDocuments[item.index].metadata.title,
+            text: allDocuments[item.index].text
+        }));
 
-The JSON must have this exact structure:
+        // Take Bottom 3 (Filtered Out)
+        const bottomDocs = rerankedIndices.slice(-3).map(item => ({
+            score: item.logit,
+            title: allDocuments[item.index].metadata.title,
+            text: allDocuments[item.index].text.substring(0, 50) + "..."
+        }));
+
+        ragContext = topDocs.map(doc => `[Reference: ${doc.title}]\n${doc.text}`).join('\n\n');
+        
+        // 비교 데이터 구성
+        ragComparison = {
+            query: ragQuery,
+            description: "NVIDIA Rerank 결과 비교: AI가 선택한 맥락 vs 버린 맥락",
+            selected: topDocs.map(d => ({ title: d.title, score: d.score })),
+            rejected: bottomDocs.map(d => ({ title: d.title, score: d.score }))
+        };
+
+        console.log('RAG: Context retrieved via Rerank.');
+      }
+    } catch (ragError) {
+      console.error('RAG Error:', ragError);
+    }
+
+    const systemMessage = `You are an expert learning roadmap generator. YOUR GOAL is to create a practical, step-by-step roadmap.
+
+    ${ragContext ? `\nUse this context to guide the roadmap:\n\n${ragContext}\n\n` : ''}
+
+CRITICAL: Respond with ONLY the following JSON structure. No markdown.
+
 {
   "roadmap": [
     {
       "day": 1,
-      "title": "Short, clear, one-line goal for the day",
-      "difficulty": "novice" | "easy" | "medium" | "hard",
+      "title": "Actionable title",
+      "difficulty": "novice",
       "completed": false,
       "feedback": null,
       "uploadedFile": null
     }
   ],
-  "ai_message": "Short (1-3 sentences), encouraging message that matches the persona. Address the user directly."
+  "ai_message": "Encouraging message matching the persona (${persona})."
 }
 
-Rules:
-- Create exactly ${duration} days in the roadmap array
-- Each day must have a clear, actionable title
-- Set appropriate difficulty levels based on the user's experience level
-- The ai_message should match the persona (${persona}) and be encouraging
-- completed, feedback, and uploadedFile should always be false/null initially
-- Respond with ONLY the JSON object, nothing else`;
+Constraints:
+- Create exactly ${duration} days
+- Adjust difficulty to: ${experience}
+- Persona style: ${persona}
+- Output JSON only`;
 
     const userMessage = `Create a ${duration}-day roadmap for:
 - Category: ${category}
@@ -66,7 +111,7 @@ Remember: Output ONLY valid JSON, no other text.`;
 
     // Call Claude API
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929',
+      model: 'claude-sonnet-4-5-20250929', // Verify valid model name
       max_tokens: 4096,
       system: systemMessage,
       messages: [
@@ -111,6 +156,11 @@ Remember: Output ONLY valid JSON, no other text.`;
       return res.status(500).json({
         error: 'Invalid roadmap structure: missing or invalid ai_message'
       });
+    }
+
+    // Add RAG Comparison Data to the response (for Demo/Debugging)
+    if (ragComparison) {
+        roadmapData.rag_comparison = ragComparison;
     }
 
     // Send the JSON response
