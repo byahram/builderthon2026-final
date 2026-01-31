@@ -113,12 +113,15 @@ Remember: Output ONLY valid JSON, no other text.`;
     let roadmapData;
     
     try {
+        console.log('🚀 Sending request to Anthropic...');
         const message = await anthropic.messages.create({
-          model: 'claude-3-5-sonnet-20241022', // Updated to correct model name
+          model: 'claude-3-haiku-20240307', 
           max_tokens: 4096,
           system: systemMessage,
           messages: [{ role: 'user', content: userMessage }]
         });
+        
+        console.log('✅ Anthropic Response Received');
 
         // Extract the response text
         let responseText = message.content[0].text.trim();
@@ -130,19 +133,22 @@ Remember: Output ONLY valid JSON, no other text.`;
         roadmapData = JSON.parse(responseText);
 
     } catch (apiError) {
-        console.error('Anthropic API Failed (Using Fallback for Demo):', apiError.message);
-        
-        // Demo Fallback: If API fails (e.g. 401), return a Mock Roadmap but WITH Real RAG Data
+        console.error('❌ Anthropic API CRITICAL FAILURE ❌');
+        console.error('Status Code:', apiError.status);
+        console.error('Error Type:', apiError.type);
+        console.error('Full Error Object:', JSON.stringify(apiError, null, 2));
+
+        // Demo Fallback
         roadmapData = {
             roadmap: Array.from({ length: duration }, (_, i) => ({
                 day: i + 1,
-                title: `[Error: ${apiError.status || 'Unknown'}] ${apiError.message.substring(0, 30)}...`,
+                title: `[Error: ${apiError.status}] Check Console for details`,
                 difficulty: experience,
                 completed: false,
                 feedback: null,
                 uploadedFile: null
             })),
-            ai_message: "⚠️ API 키 오류가 발생했지만, RAG 데이터는 정상적으로 추출되었습니다. 아래 콘솔을 확인하세요."
+            ai_message: `⚠️ API Error (See Backend Console): ${apiError.message}`
         };
     }
 
