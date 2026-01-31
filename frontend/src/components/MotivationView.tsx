@@ -11,8 +11,8 @@ interface MotivationViewProps {
 
 export const MotivationView: React.FC<MotivationViewProps> = ({ setStep, userData, setUserData }) => {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 to-purple-900 text-white p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="w-full h-full text-white p-8">
+      <div className="w-full">
         <button 
           onClick={() => setStep('experience')}
           className="mb-8 flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
@@ -39,7 +39,10 @@ export const MotivationView: React.FC<MotivationViewProps> = ({ setStep, userDat
             return (
               <button
                 key={mot.id}
-                onClick={() => setUserData({...userData, motivation: mot.id})}
+                onClick={() => {
+                  setUserData({...userData, motivation: mot.id});
+                  setStep('duration'); // Auto-advance
+                }}
                 className={`p-6 rounded-2xl transition-all duration-300 flex items-center justify-between ${
                   isSelected 
                     ? 'bg-white/10 ring-2 ring-white scale-102' 
@@ -56,13 +59,7 @@ export const MotivationView: React.FC<MotivationViewProps> = ({ setStep, userDat
           })}
         </div>
         
-        {userData.motivation && (
-          <button 
-            onClick={() => setStep('duration')}
-            className="w-full py-4 bg-linear-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-102 active:scale-98">
-            다음
-          </button>
-        )}
+
       </div>
     </div>
   );

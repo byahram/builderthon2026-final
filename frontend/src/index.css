@@ -1,38 +1,32 @@
 @import "tailwindcss";
 
-@keyframes confetti {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+@theme {
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
 }
 
-@keyframes scale-in {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
 }
 
-@keyframes slide-up {
-  0% { transform: translateY(50px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-@keyframes slide-down {
-  0% { transform: translate(-50%, -100px); opacity: 0; }
-  100% { transform: translate(-50%, 0); opacity: 1; }
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3); /* purple-500 with opacity */
+  border-radius: 10px;
 }
 
-.animate-confetti {
-  animation: confetti linear forwards;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.6);
 }
 
-.animate-scale-in {
-  animation: scale-in 0.5s ease-out;
+/* Hide scrollbar for clean UI but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
-
-.animate-slide-up {
-  animation: slide-up 0.5s ease-out;
-}
-
-.animate-slide-down {
-  animation: slide-down 0.5s ease-out;
+.scrollbar-hide {
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
 }

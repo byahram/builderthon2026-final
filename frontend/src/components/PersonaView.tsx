@@ -40,8 +40,8 @@ export const PersonaView: React.FC<PersonaViewProps> = ({ setStep, userData, set
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 to-purple-900 text-white p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="w-full h-full text-white p-8">
+      <div className="w-full">
         <button 
           onClick={() => setStep('duration')}
           className="mb-8 flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
@@ -64,7 +64,10 @@ export const PersonaView: React.FC<PersonaViewProps> = ({ setStep, userData, set
             return (
               <button
                 key={persona.id}
-                onClick={() => setUserData({...userData, persona: persona.id})}
+                onClick={() => {
+                   setUserData({...userData, persona: persona.id});
+                   setStep('summary'); // Auto-advance to summary
+                }}
                 className={`text-left p-6 rounded-2xl transition-all duration-300 relative overflow-hidden group w-full ${
                   isSelected 
                     ? 'ring-2 ring-white scale-102' 
@@ -119,13 +122,7 @@ export const PersonaView: React.FC<PersonaViewProps> = ({ setStep, userData, set
           </div>
         )}
         
-        {userData.persona && (
-          <button 
-            onClick={() => setStep('roadmap-preview')}
-            className="w-full mt-4 py-4 bg-linear-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-102 active:scale-98 animate-slide-up">
-            로드맵 생성하기
-          </button>
-        )}
+
       </div>
     </div>
   );

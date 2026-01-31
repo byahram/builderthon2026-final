@@ -11,8 +11,8 @@ interface DurationViewProps {
 
 export const DurationView: React.FC<DurationViewProps> = ({ setStep, userData, setUserData }) => {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 to-purple-900 text-white p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="w-full h-full text-white p-8">
+      <div className="w-full">
         <button 
           onClick={() => setStep('motivation')}
           className="mb-8 flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
@@ -34,7 +34,10 @@ export const DurationView: React.FC<DurationViewProps> = ({ setStep, userData, s
             return (
               <button
                 key={dur.days}
-                onClick={() => setUserData({...userData, duration: dur.days})}
+                onClick={() => {
+                  setUserData({...userData, duration: dur.days});
+                  setStep('persona');
+                }}
                 className={`p-6 rounded-2xl transition-all duration-300 ${
                   isSelected 
                     ? 'bg-linear-to-br from-pink-500/20 to-purple-600/20 ring-2 ring-pink-500 scale-105' 
@@ -58,11 +61,7 @@ export const DurationView: React.FC<DurationViewProps> = ({ setStep, userData, s
           })}
         </div>
         
-        <button 
-          onClick={() => setStep('persona')}
-          className="w-full py-4 bg-linear-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-102 active:scale-98">
-          다음
-        </button>
+
       </div>
     </div>
   );

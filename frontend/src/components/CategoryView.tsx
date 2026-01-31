@@ -11,8 +11,8 @@ interface CategoryViewProps {
 
 export const CategoryView: React.FC<CategoryViewProps> = ({ setStep, userData, setUserData }) => {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 to-purple-900 text-white p-6">
-      <div className="max-w-2xl mx-auto">
+    <div className="w-full h-full text-white p-8">
+      <div className="w-full">
         <button 
           onClick={() => setStep('welcome')}
           className="mb-8 flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
@@ -35,7 +35,10 @@ export const CategoryView: React.FC<CategoryViewProps> = ({ setStep, userData, s
             return (
               <button
                 key={cat.id}
-                onClick={() => setUserData({...userData, category: cat.id})}
+                onClick={() => {
+                  setUserData({...userData, category: cat.id});
+                  setStep('experience'); // Auto-advance
+                }}
                 className={`relative group p-6 rounded-3xl transition-all duration-300 ${
                   isSelected 
                     ? 'bg-white/10 ring-2 ring-white scale-105' 
@@ -59,13 +62,7 @@ export const CategoryView: React.FC<CategoryViewProps> = ({ setStep, userData, s
           })}
         </div>
         
-        {userData.category && (
-          <button 
-            onClick={() => setStep('goal')}
-            className="w-full py-4 bg-linear-to-r from-pink-500 to-purple-600 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all hover:scale-102 active:scale-98">
-            다음
-          </button>
-        )}
+
       </div>
     </div>
   );

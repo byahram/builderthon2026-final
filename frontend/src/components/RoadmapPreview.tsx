@@ -20,7 +20,6 @@ export const RoadmapPreview: React.FC<RoadmapPreviewProps> = ({ setStep, userDat
     { day: Math.floor(userData.duration * 0.8), title: '마무리 단계', percentage: 80 },
     { day: userData.duration, title: '최종 완성', percentage: 100 }
   ].filter((m, i, arr) => {
-    // Filter duplicates if duration is short
     if (i > 0 && m.day === arr[i-1].day) return false;
     return m.day > 0;
   });
