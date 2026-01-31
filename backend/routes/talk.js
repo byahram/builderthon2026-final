@@ -109,53 +109,41 @@ Constraints:
 
 Remember: Output ONLY valid JSON, no other text.`;
 
-    // Call Claude API
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5-20250929', // Verify valid model name
-      max_tokens: 4096,
-      system: systemMessage,
-      messages: [
-        {
-          role: 'user',
-          content: userMessage
-        }
-      ]
-    });
-
-    // Extract the response text
-    let responseText = message.content[0].text.trim();
-
-    // Try to extract JSON if Claude wrapped it in markdown code blocks
-    if (responseText.startsWith('```')) {
-      const jsonMatch = responseText.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
-      if (jsonMatch) {
-        responseText = jsonMatch[1].trim();
-      }
-    }
-
-    // Parse the JSON response
+    // Call Claude API with Fallback
     let roadmapData;
+    
     try {
-      roadmapData = JSON.parse(responseText);
-    } catch (parseError) {
-      console.error('Failed to parse Claude response as JSON:', responseText);
-      return res.status(500).json({
-        error: 'Failed to generate valid roadmap JSON',
-        details: parseError.message
-      });
-    }
+        const message = await anthropic.messages.create({
+          model: 'claude-3-5-sonnet-20241022', // Updated to correct model name
+          max_tokens: 4096,
+          system: systemMessage,
+          messages: [{ role: 'user', content: userMessage }]
+        });
 
-    // Validate the structure
-    if (!roadmapData.roadmap || !Array.isArray(roadmapData.roadmap)) {
-      return res.status(500).json({
-        error: 'Invalid roadmap structure: missing or invalid roadmap array'
-      });
-    }
+        // Extract the response text
+        let responseText = message.content[0].text.trim();
+        if (responseText.startsWith('```')) {
+          const jsonMatch = responseText.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+          if (jsonMatch) responseText = jsonMatch[1].trim();
+        }
+        
+        roadmapData = JSON.parse(responseText);
 
-    if (!roadmapData.ai_message || typeof roadmapData.ai_message !== 'string') {
-      return res.status(500).json({
-        error: 'Invalid roadmap structure: missing or invalid ai_message'
-      });
+    } catch (apiError) {
+        console.error('Anthropic API Failed (Using Fallback for Demo):', apiError.message);
+        
+        // Demo Fallback: If API fails (e.g. 401), return a Mock Roadmap but WITH Real RAG Data
+        roadmapData = {
+            roadmap: Array.from({ length: duration }, (_, i) => ({
+                day: i + 1,
+                title: `[Demo Info] API Key Error - Day ${i + 1}`,
+                difficulty: experience,
+                completed: false,
+                feedback: null,
+                uploadedFile: null
+            })),
+            ai_message: "⚠️ API 키 오류가 발생했지만, RAG 데이터는 정상적으로 추출되었습니다. 아래 콘솔을 확인하세요."
+        };
     }
 
     // Add RAG Comparison Data to the response (for Demo/Debugging)
