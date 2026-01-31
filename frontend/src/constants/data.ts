@@ -35,33 +35,43 @@ export const durations = [
 
 export const personas = [
   { 
-    id: 'sparta', 
-    name: '스파르타 교관', 
-    desc: '강력하고 단호한 동기부여', 
-    quote: '"포기란 없다! 오늘 안 하면 내일은 없어!"',
-    icon: Zap,
-    gradient: 'from-red-500 to-orange-600',
-    voiceId: 'ODq5zmih8GrVes37Dizd', // Patrick (Shouty)
-    sampleText: '정신 차리세요! 오늘 할 일을 내일로 미루면, 성공도 내일로 미뤄집니다!'
+    id: 'steve', 
+    name: '혁신가 (Steve)', 
+    desc: 'Tech & Business의 제왕', 
+    quote: '"Stay Hungry, Stay Foolish."',
+    icon: Lightbulb,
+    gradient: 'from-gray-700 to-black',
+    voiceId: 'nPczCjzI2devNBz1zQrb', // Brian (Deep/Narrative)
+    sampleText: '우리는 우주에 흔적을 남기기 위해 여기에 있습니다. 위대한 제품을 만듭시다.'
   },
   { 
-    id: 'gentle', 
-    name: '감성 멘토', 
-    desc: '따뜻한 위로와 격려', 
-    quote: '"오늘도 수고했어요. 천천히 가도 괜찮아요."',
+    id: 'gordon', 
+    name: '독설가 (Gordon)', 
+    desc: 'Design & Quality의 제왕', 
+    quote: '"이게 최선입니까? 쓰레기통으로 가세요!"',
+    icon: Zap,
+    gradient: 'from-red-600 to-rose-700',
+    voiceId: 'ODq5zmih8GrVes37Dizd', // Patrick (Shouty)
+    sampleText: '이 정도 퀄리티로 고객을 만족시킬 수 있다고 생각합니까? 다시 하세요!'
+  },
+  { 
+    id: 'david', 
+    name: '교관 (Goggins)', 
+    desc: 'Self-Help & Fitness의 제왕', 
+    quote: '"네 영혼을 갈아넣어라. 한계는 없다."',
+    icon: Rocket,
+    gradient: 'from-blue-700 to-slate-800',
+    voiceId: 'onwK4e9ZLuTAKqWW03F9', // Daniel (Strong)
+    sampleText: '힘듭니까? 그건 뇌가 보내는 거짓 신호입니다. 지금 당장 움직이십시오!'
+  },
+  { 
+    id: 'emily', 
+    name: '멘토 (Warm)', 
+    desc: '따뜻한 격려와 위로', 
+    quote: '"괜찮아요, 당신의 속도로 가면 돼요."',
     icon: Heart,
     gradient: 'from-emerald-400 to-teal-500',
-    voiceId: 'LcfcDJNUP1GQjkzn1xUU', // Emily (Calm)
-    sampleText: '오늘 하루도 정말 고생 많았어요. 당신의 속도대로 천천히, 하지만 꾸준히 나아가면 돼요.'
-  },
-  { 
-    id: 'expert', 
-    name: 'AI 분석가', 
-    desc: '냉철한 데이터 기반 코칭', 
-    quote: '"현재 달성률 40%. 효율적인 전략이 필요합니다."',
-    icon: Brain,
-    gradient: 'from-blue-500 to-indigo-600',
-    voiceId: 'onwK4e9ZLuTAKqWW03F9', // Daniel (Deep/News)
-    sampleText: '현재 데이터를 분석한 결과, 목표 달성 확률은 85%입니다. 지금 바로 시작하는 것이 최적의 전략입니다.'
+    voiceId: 'LcfcDJNUP1GQjkzn1xUU', // Emily (Gentle)
+    sampleText: '오늘 하루도 정말 고생 많았어요. 조금 늦어도 괜찮으니 포기하지 마세요.'
   }
 ];

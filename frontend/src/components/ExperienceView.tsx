@@ -14,7 +14,7 @@ export const ExperienceView: React.FC<ExperienceViewProps> = ({ setStep, userDat
     <div className="w-full h-full text-white p-8">
       <div className="w-full">
         <button 
-          onClick={() => setStep('goal')}
+          onClick={() => setStep('category')}
           className="mb-8 flex items-center gap-2 text-purple-300 hover:text-white transition-colors">
           <ChevronLeft className="w-5 h-5" />
           뒤로

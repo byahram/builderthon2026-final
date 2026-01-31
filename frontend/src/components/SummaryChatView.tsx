@@ -9,6 +9,7 @@ interface SummaryChatViewProps {
   onGenerate: () => void;
   isLoading: boolean;
   isRoadmapActive?: boolean;
+  ragComparison?: any;
 }
 
 interface Message {
@@ -18,7 +19,7 @@ interface Message {
   timestamp?: string;
 }
 
-export const SummaryChatView: React.FC<SummaryChatViewProps> = ({ userData, setUserData, onGenerate, isLoading, isRoadmapActive }) => {
+export const SummaryChatView: React.FC<SummaryChatViewProps> = ({ userData, setUserData, onGenerate, isLoading, isRoadmapActive, ragComparison }) => {
   const [goalInput, setGoalInput] = useState('');
   const [isSummaryExpanded, setIsSummaryExpanded] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -56,18 +57,47 @@ export const SummaryChatView: React.FC<SummaryChatViewProps> = ({ userData, setU
         timestamp: timestamp
     };
 
-    const newAiMsg: Message = {
-        id: Date.now() + 1,
-        role: 'ai',
-        text: `로드맵이 생성되었습니다. (${timestamp})`,
-        timestamp: timestamp
-    };
-
-    setMessages([...messages, newUserMsg, newAiMsg]);
+    setMessages([...messages, newUserMsg]);
     setUserData({ ...userData, goal: goalInput });
     setGoalInput(''); // Clear input
-    // onGenerate() removed to prevent race condition. useEffect in App.tsx will trigger it.
+    // onGenerate will be triggered by App.tsx when userData is updated
   };
+
+  // Effect: Trigger generation when goal is set (if not already loading)
+  React.useEffect(() => {
+    if (userData.goal && messages.length > 0 && messages[messages.length-1].role === 'user' && !isLoading) {
+        onGenerate();
+    }
+  }, [userData.goal, messages]);
+
+  // Track loading state to detect completion (Falling Edge)
+  const wasLoadingRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (isLoading) {
+        wasLoadingRef.current = true;
+    } else if (wasLoadingRef.current && isRoadmapActive) {
+        // isLoading changed from true -> false (Completion)
+        wasLoadingRef.current = false;
+        
+         const now = new Date();
+         const timestamp = now.toLocaleString('ko-KR', { 
+            year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+         });
+         
+         const newAiMsg: Message = {
+            id: Date.now(),
+            role: 'ai',
+            text: `로드맵이 생성되었습니다. (${timestamp})`,
+            timestamp: timestamp
+        };
+        setMessages(prev => {
+            // Prevent duplicates if strict mode double-invokes
+            if (prev.length > 0 && prev[prev.length - 1].role === 'ai') return prev;
+            return [...prev, newAiMsg];
+        });
+    }
+  }, [isLoading, isRoadmapActive]);
 
   const SummaryItem = ({ label, value, emoji, icon: Icon }: any) => (
     <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
@@ -148,6 +178,49 @@ export const SummaryChatView: React.FC<SummaryChatViewProps> = ({ userData, setU
                         </div>
                     </div>
                 ))}
+            </div>
+        )}
+
+        {/* RAG Debug Info (Demo Only) */}
+        {ragComparison && (
+            <div className="mt-4 mb-20 p-4 bg-black/40 rounded-xl border border-white/10 text-xs animate-fade-in-up">
+                <h3 className="text-sm font-bold text-white mb-3 flex items-center border-b border-white/10 pb-2">
+                    <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                    NVIDIA RAG Analysis (Real-time)
+                </h3>
+                
+                <div className="grid gap-4">
+                    <div>
+                        <div className="text-green-400 font-bold mb-2 flex items-center">
+                            <CheckCircle2 className="w-3 h-3 mr-1" /> Selected Context (AI가 참고함)
+                        </div>
+                        <div className="space-y-1">
+                            {ragComparison.selected.map((item: any, idx: number) => (
+                                <div key={`sel-${idx}`} className="flex justify-between items-center py-1.5 px-2 bg-green-500/10 rounded border border-green-500/20">
+                                    <span className="text-white truncate flex-1 pr-2">{item.title}</span>
+                                    <span className="text-green-300 font-mono font-bold bg-black/30 px-1.5 py-0.5 rounded">{item.score.toFixed(2)}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className="text-red-400 font-bold mb-2 flex items-center">
+                            <span className="mr-1">🚫</span> Filtered Out (관련성 낮음)
+                        </div>
+                        <div className="space-y-1">
+                            {ragComparison.rejected.map((item: any, idx: number) => (
+                                <div key={`rej-${idx}`} className="flex justify-between items-center py-1.5 px-2 bg-red-500/5 rounded border border-red-500/10 opacity-70">
+                                    <span className="text-gray-400 truncate flex-1 pr-2">{item.title}</span>
+                                    <span className="text-red-400 font-mono bg-black/30 px-1.5 py-0.5 rounded">{item.score.toFixed(2)}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div className="mt-3 text-[10px] text-gray-500 text-center">
+                    * NVIDIA Rerank Model이 문맥적 연관성을 기반으로 점수화한 결과입니다.
+                </div>
             </div>
         )}
       </div>

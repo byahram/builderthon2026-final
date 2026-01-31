@@ -29,6 +29,7 @@ const App: React.FC = () => {
   const [showDifficultyAdjustment, setShowDifficultyAdjustment] = useState<boolean>(false);
   const [celebrationStep, setCelebrationStep] = useState<number>(0); // 0: none, 1: confetti+streak, 2: progress
   const [isLoading, setIsLoading] = useState<boolean>(false); // Added isLoading state
+  const [ragComparison, setRagComparison] = useState<any>(null); // Store RAG Debug Info
 
   useEffect(() => {
     if (userData.category && userData.goal && userData.duration && userData.experience && userData.motivation && userData.persona) {
@@ -42,7 +43,8 @@ const App: React.FC = () => {
 
   const handleGenerateRoadmap = async () => {
     setIsLoading(true);
-    setStep('roadmap-preview');
+    // setStep('roadmap-preview'); // Preview removed by user request
+    setStep('roadmap');
 
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
@@ -62,6 +64,9 @@ const App: React.FC = () => {
 
       const data = await response.json();
       setRoadmap(data.roadmap);
+      if (data.rag_comparison) {
+          setRagComparison(data.rag_comparison);
+      }
       
     } catch (error: any) {
       console.error('Error generating roadmap details:', error);
@@ -168,12 +173,14 @@ const App: React.FC = () => {
              streak={streak}
              showDifficultyAdjustment={showDifficultyAdjustment}
            />
+           /* Preview removed
         ) : step === 'roadmap-preview' ? (
            <RoadmapPreview 
              setStep={setStep} 
              userData={userData} 
              roadmap={roadmap} 
            />
+           */
         ) : (
            <RoadmapPlaceholder />
         )}
@@ -201,6 +208,7 @@ const App: React.FC = () => {
               onGenerate={handleGenerateRoadmap} 
               isLoading={isLoading} 
               isRoadmapActive={step === 'roadmap' || step === 'roadmap-preview'}
+              ragComparison={ragComparison}
             />
         )}
       </div>
