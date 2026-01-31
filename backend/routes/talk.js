@@ -136,7 +136,7 @@ Remember: Output ONLY valid JSON, no other text.`;
         roadmapData = {
             roadmap: Array.from({ length: duration }, (_, i) => ({
                 day: i + 1,
-                title: `[Demo Info] API Key Error - Day ${i + 1}`,
+                title: `[Error: ${apiError.status || 'Unknown'}] ${apiError.message.substring(0, 30)}...`,
                 difficulty: experience,
                 completed: false,
                 feedback: null,
